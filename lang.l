@@ -11,6 +11,7 @@
 //
 
 #include "tokens.h"
+#include "lex.h"
 
 #define DO_RETURN(a) return (a)
 //#define DO_RETURN(a) return Return(a)
@@ -24,18 +25,24 @@ int Return(int val);
 %option yylineno
 
 
-	/* definitions go here. period is an example. */
-digit 	-?[0-9]
-comment 	"//".*$
+    /* definitions go here. period is an example. */
+digit   -?[0-9]
+comment     "//".*$
 whitespace [\t\n ]+
 identifier [a-zA-Z_][a-zA-Z0-9_]*
 %%
 
-	// token definitions go here. "if" is an example.
+    // token definitions go here. "if" is an example.
 "("                 DO_RETURN('(');
 ")"                 DO_RETURN(')');
-"{"                 DO_RETURN('{');
-"}"                 DO_RETURN('}');
+"{"                 {
+                        g_SymbolTable.IncreaseScope();
+                        return yytext[0];
+                    }
+"}"                 {
+                        g_SymbolTable.DecreaseScope();
+                        return yytext[0];
+                    }
 "["                 DO_RETURN('[');
 "]"                 DO_RETURN(']');
 ";"                 DO_RETURN(';');
@@ -60,13 +67,19 @@ identifier [a-zA-Z_][a-zA-Z0-9_]*
 "char"              DO_RETURN(CHAR);
 "struct"            DO_RETURN(STRUCT);
 "return"            DO_RETURN(RETURN);
-{identifier}        DO_RETURN(IDENTIFIER);
+{identifier}        {
+                        yylval.symbol = g_SymbolTable.Insert(yytext);
+                        return IDENTIFIER;
+                    }
 {comment}           {}
 {whitespace}        {}
 {digit}+            DO_RETURN(INT_VAL);
 {digit}+"."{digit}+ DO_RETURN(FLOAT_VAL);
 .                   DO_RETURN(JUNK_TOKEN);
 %%
+
+// definition of global yylval
+yylval_t yylval;
 
 // This function allows us to do extra processing on each token
 int Return(int val)

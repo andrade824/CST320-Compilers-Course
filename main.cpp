@@ -1,26 +1,36 @@
 //**************************************
 // main.cpp
 //
-// main routine for lang compiler.
+// Main routine for lang compiler.
 // This version only runs the lexer
 //
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Nov. 23, 2015
+// Date: Nov 23, 2015
+// 
+// Modified: Devon Andrade <devon.andrade@oit.edu>
+//     Date: Jan 19, 2016
 //
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include "cSymbol.h"
+#include "cSymbolTable.h"
 #include "lex.h"
+#include "tokens.h"
+
+cSymbolTable g_SymbolTable;
+long long cSymbol::nextId = 0;
 
 int main(int argc, char **argv)
 {
     const char *outfile_name;
     int result = 0;
     int token;
+
+    std::cout << "Devon Andrade" << std::endl;
 
     if (argc > 1)
     {
@@ -47,16 +57,21 @@ int main(int argc, char **argv)
     }
     std::cout.rdbuf(output.rdbuf());
 
+    output << "<program>\n";
+
     token = yylex();
     while (token != 0)
     {
-        std::cout << token << ":" << yytext << "\n";
+        // std::cout << token << ":" << yytext << "\n";
+        // if we found an identifier, print it out
+        if (token == IDENTIFIER) std::cout << yylval.symbol->ToString() << "\n";
         token = yylex();
     }
 
+    output << "</program>\n";
+
     output.close();
     std::cout.rdbuf(cout_buf);
-
 
     return result;
 }
