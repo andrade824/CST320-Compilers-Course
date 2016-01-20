@@ -4,10 +4,10 @@
 //
 // Scanner definition file for CST 320 project
 //
-// Author: Phil Howard 
-// phil.howard@oit.edu
+// Author: Devon Andrade 
+// devon.andrade@oit.edu
 //
-// Date: Nov. 23, 2015
+// Date: Jan. 5, 2016
 //
 
 #include "tokens.h"
