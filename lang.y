@@ -75,7 +75,7 @@
 %type <ast_node> paramspec
 %type <stmts_node> stmts
 %type <stmt_node> stmt
-%type <ast_node> lval
+%type <var_ref> lval
 %type <ast_node> params
 %type <ast_node> param
 %type <expr_node> expr
@@ -147,18 +147,18 @@ stmts:      stmts stmt          {
         |   stmt                { $$ = new cStmtsNode($1); }
 
 stmt:       IF '(' expr ')' stmts ENDIF ';'
-                                {}
+                                { $$ = new cIfNode($3, $5); }
         |   IF '(' expr ')' stmts ELSE stmts ENDIF ';'
-                                {}
+                                { $$ = new cIfNode($3, $5, $7); }
         |   WHILE '(' expr ')' stmt
-                                {}
+                                { $$ = new cWhileNode($3, $5); }
         |   PRINT '(' expr ')' ';'
                                 { $$ = new cPrintNode($3); }
-        |   lval '=' expr ';'   {}
+        |   lval '=' expr ';'   { $$ = new cAssignNode($1, $3); }
         |   lval '=' func_call ';'   {}
         |   func_call ';'       {}
-        |   block               {}
-        |   RETURN expr ';'     {}
+        |   block               { $$ = $1; }
+        |   RETURN expr ';'     { $$ = new cReturnNode($2); }
         |   error ';'           {}
 
 func_call:  IDENTIFIER '(' params ')' {}
@@ -185,7 +185,7 @@ term:       term '*' fact       { $$ = new cBinaryExprNode($1, new cOpNode('*'),
         |   term '%' fact       { $$ = new cBinaryExprNode($1, new cOpNode('%'), $3); }
         |   fact                { $$ = $1; }
 
-fact:       '(' expr ')'        {}
+fact:       '(' expr ')'        { $$ = $2; }
         |   INT_VAL             { $$ = new cIntExprNode($1); }
         |   FLOAT_VAL           { $$ = new cFloatExprNode($1); }
         |   varref              { $$ = $1; }
