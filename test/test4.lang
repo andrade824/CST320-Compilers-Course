@@ -1,0 +1,10 @@
+{
+   char aaa;
+   int bbb;
+   float ccc;
+
+   print(1);
+   print(2);
+   print(aaa);
+   print(4);
+}

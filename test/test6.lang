@@ -1,0 +1,14 @@
+{
+  char aaa;
+  char bbb;
+
+  print(aaa);
+  {
+     int aaa;
+     print(aaa);
+     print(bbb);
+  }
+
+  print(aaa);
+  print(bbb);
+}
