@@ -55,6 +55,8 @@ int main(int argc, char **argv)
     }
     std::cout.rdbuf(output.rdbuf());
 
+    g_SymbolTable.InitRootTable();
+
     result = yyparse();
     if (yyast_root != nullptr)
     {

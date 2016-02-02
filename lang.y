@@ -32,6 +32,7 @@
     cSymbolTable::symbolTable_t*   sym_table;
     cDeclNode*      decl_node;
     cDeclsNode*     decls_node;
+    cVarExprNode*   var_ref;
     }
 
 %{
@@ -80,8 +81,8 @@
 %type <expr_node> expr
 %type <expr_node> term
 %type <expr_node> fact
-%type <ast_node> varref
-%type <ast_node> varpart
+%type <expr_node> varref
+%type <symbol> varpart
 
 %%
 
@@ -105,14 +106,18 @@ close:  '}'                     {
                                       $$ = nullptr; // might want to change this
                                 }
 
-decls:      decls decl          {}
-        |   decl                {}
+decls:      decls decl          {
+                                    $1->Insert($2);
+                                    $$ = $1;
+                                }
+        |   decl                { $$ = new cDeclsNode($1); }
+
 decl:       var_decl ';'        { $$ = $1; }
         |   struct_decl ';'     {}
         |   func_decl           {}
         |   error ';'           {}
 
-var_decl:   TYPE_ID IDENTIFIER  {}
+var_decl:   TYPE_ID IDENTIFIER  { $$ = new cVarDeclNode($1, $2); }
 var_decl:   STRUCT IDENTIFIER IDENTIFIER {}
 
 struct_decl:  STRUCT open decls close IDENTIFIER    
@@ -160,9 +165,9 @@ func_call:  IDENTIFIER '(' params ')' {}
         |   IDENTIFIER '(' ')'  {}
 
 varref:   varref '.' varpart    {}
-        | varpart               {}
+        | varpart               { $$ = new cVarExprNode($1); }
 
-varpart:  IDENTIFIER            {}
+varpart:  IDENTIFIER            { $$ = $1; }
 
 lval:     varref                {}
 
@@ -171,19 +176,19 @@ params:     params',' param     {}
 
 param:      expr                {}
 
-expr:       expr '+' term       { $$ = new cExprNode($1, new cOpNode('+'), $3); }
-        |   expr '-' term       { $$ = new cExprNode($1, new cOpNode('-'), $3); }
+expr:       expr '+' term       { $$ = new cBinaryExprNode($1, new cOpNode('+'), $3); }
+        |   expr '-' term       { $$ = new cBinaryExprNode($1, new cOpNode('-'), $3); }
         |   term                { $$ = $1; }
 
-term:       term '*' fact       { $$ = new cExprNode($1, new cOpNode('*'), $3); }
-        |   term '/' fact       { $$ = new cExprNode($1, new cOpNode('/'), $3); }
-        |   term '%' fact       { $$ = new cExprNode($1, new cOpNode('%'), $3); }
+term:       term '*' fact       { $$ = new cBinaryExprNode($1, new cOpNode('*'), $3); }
+        |   term '/' fact       { $$ = new cBinaryExprNode($1, new cOpNode('/'), $3); }
+        |   term '%' fact       { $$ = new cBinaryExprNode($1, new cOpNode('%'), $3); }
         |   fact                { $$ = $1; }
 
 fact:       '(' expr ')'        {}
         |   INT_VAL             { $$ = new cIntExprNode($1); }
         |   FLOAT_VAL           { $$ = new cFloatExprNode($1); }
-        |   varref              {}
+        |   varref              { $$ = $1; }
 
 %%
 

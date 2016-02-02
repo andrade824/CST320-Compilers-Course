@@ -93,6 +93,14 @@ class cSymbolTable
             return FindInTable(m_SymbolTable.front(), name);
         }
 
+        // Initialize the global symobl table
+        void InitRootTable()
+        {
+            Insert(new cSymbol("char"));
+            Insert(new cSymbol("int"));
+            Insert(new cSymbol("float"));
+        }
+
     protected:
         // list of symbol tables. The list contains the different levels
         // in the nested table.
@@ -110,12 +118,6 @@ class cSymbolTable
             else
                 return got->second;
         }
-
-    // Initialize the global table
-    void InitGlobalTable()
-    {
-        // Insert types
-    }
 };
 
 // Declaration for the global symbol table.

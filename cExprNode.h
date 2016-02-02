@@ -14,22 +14,10 @@
 //
 
 #include "cStmtNode.h"
-#include "cOpNode.h"
 
 class cExprNode : public cStmtNode
 {
     public:
-    	// Default constructor
-		cExprNode() : cStmtNode() {}
-
-    	// Expression node that has parameters
-        cExprNode(cExprNode *expr1, cOpNode *op, cExprNode *expr2) : cStmtNode() 
-        {
-        	AddChild(expr1);
-        	AddChild(op);
-        	AddChild(expr2);
-        }
-
-    virtual string NodeType() { return string("expr"); }
-    virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        // Default constructor
+        cExprNode() : cStmtNode() {}
 };

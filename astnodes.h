@@ -21,5 +21,8 @@
 #include "cStmtsNode.h"
 #include "cPrintNode.h"
 #include "cExprNode.h"
+#include "cBinaryExprNode.h"
 #include "cIntExprNode.h"
 #include "cFloatExprNode.h"
+#include "cVarDeclNode.h"
+#include "cVarExprNode.h"
