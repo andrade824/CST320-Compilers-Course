@@ -29,6 +29,9 @@ public:
     // Insert a symbol into the current scope if it doesn't already exist
     cSymbol * Insert(const string & name);
 
+    // Initialize the global table
+    void InitGlobalTable();
+
     // Lookup a symbol only within the current symbol table
     cSymbol * LookupInner(const string & name) const;
 
