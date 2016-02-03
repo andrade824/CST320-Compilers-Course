@@ -22,6 +22,6 @@ class cWhileNode : public cStmtNode
             AddChild(stmt);
         }
 
-    virtual string NodeType() { return string("while"); }
-    virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string NodeType() { return string("while"); }
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

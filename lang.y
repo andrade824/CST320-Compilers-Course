@@ -33,6 +33,9 @@
     cDeclNode*      decl_node;
     cDeclsNode*     decls_node;
     cVarExprNode*   var_ref;
+    cFuncDeclNode*  func_decl;
+    cParamsNode*    args_node;
+    cParamListNode* params_node;
     }
 
 %{
@@ -67,21 +70,21 @@
 %type <decl_node> decl
 %type <decl_node> var_decl
 %type <decl_node> struct_decl
-%type <ast_node> func_decl
-%type <ast_node>  func_header
-%type <symbol>  func_prefix
-%type <ast_node> func_call
-%type <ast_node> paramsspec
-%type <ast_node> paramspec
+%type <decl_node> func_decl
+%type <func_decl>  func_header
+%type <func_decl>  func_prefix
+%type <expr_node> func_call
+%type <args_node> paramsspec
+%type <decl_node> paramspec
 %type <stmts_node> stmts
 %type <stmt_node> stmt
 %type <var_ref> lval
-%type <ast_node> params
-%type <ast_node> param
+%type <params_node> params
+%type <expr_node> param
 %type <expr_node> expr
 %type <expr_node> term
 %type <expr_node> fact
-%type <expr_node> varref
+%type <var_ref> varref
 %type <symbol> varpart
 
 %%
@@ -96,15 +99,9 @@ program: block                  { $$ = new cProgramNode($1);
 block:  open decls stmts close  { $$ = new cBlockNode($2, $3); }
     |   open stmts close        { $$ = new cBlockNode(nullptr, $2); }
 
-open:   '{'                     {
-                                      g_SymbolTable.IncreaseScope();
-                                      $$ = nullptr; // probably want to change this
-                                }
+open:   '{'                     { $$ = g_SymbolTable.IncreaseScope(); }
 
-close:  '}'                     {
-                                      g_SymbolTable.DecreaseScope();
-                                      $$ = nullptr; // might want to change this
-                                }
+close:  '}'                     { $$ = g_SymbolTable.DecreaseScope(); }
 
 decls:      decls decl          {
                                     $1->Insert($2);
@@ -113,32 +110,50 @@ decls:      decls decl          {
         |   decl                { $$ = new cDeclsNode($1); }
 
 decl:       var_decl ';'        { $$ = $1; }
-        |   struct_decl ';'     {}
+        |   struct_decl ';'     { $$ = $1; }
         |   func_decl           {}
         |   error ';'           {}
 
 var_decl:   TYPE_ID IDENTIFIER  { $$ = new cVarDeclNode($1, $2); }
-var_decl:   STRUCT IDENTIFIER IDENTIFIER {}
+var_decl:   STRUCT IDENTIFIER IDENTIFIER { $$ = new cVarDeclNode($2, $3); }
 
 struct_decl:  STRUCT open decls close IDENTIFIER    
-                                {}
+                                { $$ = new cStructDeclNode($2, $3, $5); }
 func_decl:  func_header ';'
-                                {}
+                                {
+                                    g_SymbolTable.DecreaseScope();
+                                    $$ = $1;
+                                }
         |   func_header  '{' decls stmts '}'
-                                {}
+                                {
+                                    $1->Insert($3);
+                                    $1->Insert($4);
+                                    g_SymbolTable.DecreaseScope();
+                                    $$ = $1;
+                                }
         |   func_header  '{' stmts '}'
-                                {}
+                                {
+                                    $1->Insert($3);
+                                    g_SymbolTable.DecreaseScope();
+                                    $$ = $1;
+                                }
 func_header: func_prefix paramsspec ')'
-                                {}
-        |    func_prefix ')'    {}
+                                {
+                                    $1->Insert($2); 
+                                    $$ = $1; 
+                                }
+        |    func_prefix ')'    { $$ = $1; }
 func_prefix: TYPE_ID IDENTIFIER '('
-                                {}
+                                {
+                                    $$ = new cFuncDeclNode($1, $2);
+                                    g_SymbolTable.IncreaseScope();
+                                }
 paramsspec:     
             paramsspec',' paramspec 
-                                {}
-        |   paramspec           {}
+                                { $1->Insert($3); }
+        |   paramspec           { $$ = new cParamsNode($1); }
 
-paramspec:  var_decl            {}
+paramspec:  var_decl            { $$ = $1; }
 
 stmts:      stmts stmt          {
                                     $1->Insert($2);
@@ -155,26 +170,26 @@ stmt:       IF '(' expr ')' stmts ENDIF ';'
         |   PRINT '(' expr ')' ';'
                                 { $$ = new cPrintNode($3); }
         |   lval '=' expr ';'   { $$ = new cAssignNode($1, $3); }
-        |   lval '=' func_call ';'   {}
-        |   func_call ';'       {}
+        |   lval '=' func_call ';'   { $$ = new cAssignNode($1, $3); }
+        |   func_call ';'       { $$ = $1; }
         |   block               { $$ = $1; }
         |   RETURN expr ';'     { $$ = new cReturnNode($2); }
         |   error ';'           {}
 
-func_call:  IDENTIFIER '(' params ')' {}
-        |   IDENTIFIER '(' ')'  {}
+func_call:  IDENTIFIER '(' params ')' { $$ = new cFuncExprNode($1, $3); }
+        |   IDENTIFIER '(' ')'  { $$ = new cFuncExprNode($1, nullptr); }
 
-varref:   varref '.' varpart    {}
+varref:   varref '.' varpart    { $1->AddChild($3); }
         | varpart               { $$ = new cVarExprNode($1); }
 
 varpart:  IDENTIFIER            { $$ = $1; }
 
-lval:     varref                {}
+lval:     varref                { $$ = $1; }
 
-params:     params',' param     {}
-        |   param               {}
+params:     params',' param     { $1->Insert($3); }
+        |   param               { $$ = new cParamListNode($1); }
 
-param:      expr                {}
+param:      expr                { $$ = $1; }
 
 expr:       expr '+' term       { $$ = new cBinaryExprNode($1, new cOpNode('+'), $3); }
         |   expr '-' term       { $$ = new cBinaryExprNode($1, new cOpNode('-'), $3); }

@@ -22,10 +22,12 @@ class cOpNode : public cAstNode
 
         virtual string NodeType()       { return "op"; }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
         virtual string AttributesToString()   
         { 
             return string(" value='") + m_op + "'";
         }
+        
     protected:
         char m_op;      // the operand
 };

@@ -31,6 +31,6 @@ class cIfNode : public cStmtNode
             AddChild(elsestmts);
         }
 
-    virtual string NodeType() { return string("if"); }
-    virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string NodeType() { return string("if"); }
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

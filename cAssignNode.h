@@ -22,6 +22,6 @@ class cAssignNode : public cStmtNode
             AddChild(rval);
         }
 
-    virtual string NodeType() { return string("assign"); }
-    virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string NodeType() { return string("assign"); }
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

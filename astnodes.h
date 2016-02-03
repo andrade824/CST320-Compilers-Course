@@ -30,3 +30,8 @@
 #include "cReturnNode.h"
 #include "cWhileNode.h"
 #include "cAssignNode.h"
+#include "cStructDeclNode.h"
+#include "cParamsNode.h"
+#include "cFuncDeclNode.h"
+#include "cParamListNode.h"
+#include "cFuncExprNode.h"

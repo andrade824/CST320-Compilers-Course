@@ -1,8 +1,8 @@
 #pragma once
 //**************************************
-// cVarExprNode.h
+// cFuncExprNode.h
 //
-// Variable reference node
+// Function reference node
 //
 // Author: Devon Andrade <devon.andrade@oit.edu>
 //
@@ -10,17 +10,19 @@
 //
 
 #include "cExprNode.h"
+#include "cParamListNode.h"
 #include "cSymbol.h"
 
-class cVarExprNode : public cExprNode
+class cFuncExprNode : public cExprNode
 {
     public:
-        // Variable declaration node
-        cVarExprNode(cSymbol* name) : cExprNode() 
+        // Function reference node
+        cFuncExprNode(cSymbol* name, cParamListNode* params) : cExprNode() 
         {
             AddChild(name);
+            AddChild(params);
         }
 
-        virtual string NodeType() { return string("varref"); }
+        virtual string NodeType() { return string("funcCall"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };
