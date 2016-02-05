@@ -82,6 +82,7 @@
 %type <params_node> params
 %type <expr_node> param
 %type <expr_node> expr
+%type <expr_node> addit
 %type <expr_node> term
 %type <expr_node> fact
 %type <var_ref> varref
@@ -191,13 +192,16 @@ params:     params',' param     { $1->Insert($3); }
 
 param:      expr                { $$ = $1; }
 
-expr:       expr '+' term       { $$ = new cBinaryExprNode($1, new cOpNode('+'), $3); }
-        |   expr '-' term       { $$ = new cBinaryExprNode($1, new cOpNode('-'), $3); }
+expr:       expr EQUALS addit   { $$ = new cBinaryExprNode($1, new cOpNode("=="), $3); }
+        |   addit               { $$ = $1; }
+
+addit:      addit '+' term      { $$ = new cBinaryExprNode($1, new cOpNode("+"), $3); }
+        |   addit '-' term      { $$ = new cBinaryExprNode($1, new cOpNode("-"), $3); }
         |   term                { $$ = $1; }
 
-term:       term '*' fact       { $$ = new cBinaryExprNode($1, new cOpNode('*'), $3); }
-        |   term '/' fact       { $$ = new cBinaryExprNode($1, new cOpNode('/'), $3); }
-        |   term '%' fact       { $$ = new cBinaryExprNode($1, new cOpNode('%'), $3); }
+term:       term '*' fact       { $$ = new cBinaryExprNode($1, new cOpNode("*"), $3); }
+        |   term '/' fact       { $$ = new cBinaryExprNode($1, new cOpNode("/"), $3); }
+        |   term '%' fact       { $$ = new cBinaryExprNode($1, new cOpNode("%"), $3); }
         |   fact                { $$ = $1; }
 
 fact:       '(' expr ')'        { $$ = $2; }

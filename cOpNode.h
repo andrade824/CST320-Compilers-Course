@@ -4,18 +4,19 @@
 //
 // Class for an operator (e.g. + - etc.)
 //
-// Author: Phil Howard 
-// phil.howard@oit.edu
+// Author: Devon Andrade <devon.andrade@oit.edu>
 //
-// Date: Jan. 18, 2016
+// Date: Feb. 5, 2016
 //
 
+#include <string>
 #include "cAstNode.h"
+using std::string;
 
 class cOpNode : public cAstNode
 {
     public:
-        cOpNode(char op) : cAstNode()
+        cOpNode(string op) : cAstNode()
         {
             m_op = op;
         }
@@ -29,6 +30,6 @@ class cOpNode : public cAstNode
         }
         
     protected:
-        char m_op;      // the operand
+        string m_op;      // the operand
 };
 

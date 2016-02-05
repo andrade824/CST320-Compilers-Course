@@ -1,9 +1,19 @@
+// operator precedence and associativity
 {
-   int val;
-   int arr1[2];
-   int arr2[2][5];
+    int val;
 
-   arr1[1] = 5;
-   arr1[2] = arr1[5];
-   arr2[1][4] = arr2[0][3];
+    // associativity
+    val = 1 == 2 == 3;
+    val = 1 + 2 + 3 - 4 - 5 + 6;
+    val = 1 * 2 * 3 / 4 / 5 % 6 % 7 / 8 * 9;
+
+    // precedence
+    val = 1 == 2 + 3 == 4;
+    val = 1 == 2 - 3 == 4;
+    val = 1 + 2 * 3 + 4;
+    val = 1 - 2 * 3 - 4;
+    val = 1 + 2 / 3 + 4;
+    val = 1 - 2 / 3 - 4;
 }
+
+
