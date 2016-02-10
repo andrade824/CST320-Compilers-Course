@@ -7,10 +7,9 @@
 // This is a pure virtual class because there is no definition for
 // cAstNode::ToString()
 //
-// Author: Phil Howard 
-// phil.howard@oit.edu
+// Author: Devon Andrade <devon.andrade@oit.edu>
 //
-// Date: Jan. 18, 2015
+// Date: Feb. 2, 2016
 //
 
 #include "cStmtNode.h"
