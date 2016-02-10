@@ -2,7 +2,7 @@
 //**************************************
 // lex.h
 //
-// Defines global symbols used the the flex generated lexer and 
+// Defines global symbols used by the flex generated lexer and 
 // bison generated parser.
 //
 // Author: Phil Howard phil.howard@oit.edu
@@ -18,6 +18,7 @@ int yyparse();
 int yylex();
 
 extern cSymbolTable g_SymbolTable;
+extern bool g_semanticErrorHappened;
 extern char *yytext;                    // text of current token
 extern int yylineno;                    // line number of input file
 extern int yynerrs;                     // Num of compile errors

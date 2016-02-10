@@ -11,6 +11,8 @@
 
 #include "cExprNode.h"
 #include "cSymbol.h"
+#include "cSymbolTable.h"
+#include "semantic.h" 
 
 class cVarExprNode : public cExprNode
 {
@@ -18,6 +20,9 @@ class cVarExprNode : public cExprNode
         // Variable declaration node
         cVarExprNode(cSymbol* name) : cExprNode() 
         {
+            if(g_SymbolTable.Find(name->GetName()) == nullptr)
+                SemanticError("Symbol " + name->GetName() + " not defined");
+            
             AddChild(name);
         }
 

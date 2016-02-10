@@ -21,6 +21,7 @@
 #include "lex.h"
 
 cSymbolTable g_SymbolTable;
+bool g_semanticErrorHappened = false;
 long long cSymbol::nextId = 0;
 
 int main(int argc, char **argv)

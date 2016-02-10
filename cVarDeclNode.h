@@ -12,6 +12,7 @@
 #include "cDeclNode.h"
 #include "cSymbolTable.h"
 #include "cSymbol.h"
+#include "semantic.h"
 
 class cVarDeclNode : public cDeclNode
 {
@@ -19,14 +20,22 @@ class cVarDeclNode : public cDeclNode
         // Variable declaration node
         cVarDeclNode(cSymbol *type, cSymbol* name) : cDeclNode() 
         {
-            // Create a new symbol for the innermost scope
-            // if a symbol already exists in an outer scope somewhere
-            if(g_SymbolTable.Find(name->GetName()))
-                name = new cSymbol(name->GetName());
+            if(g_SymbolTable.FindLocal(name->GetName()))
+            {
+                SemanticError("Symbol " + name->GetName() + " already defined in current scope");
+            }
+            else
+            {
+                // Create a new symbol for the innermost scope
+                // if a symbol already exists in an outer scope somewhere
+                if(g_SymbolTable.Find(name->GetName()))
+                    name = new cSymbol(name->GetName());
+
+                g_SymbolTable.Insert(name);
+            }
 
             AddChild(type);
             AddChild(name);
-            g_SymbolTable.Insert(name);
         }
 
         virtual string NodeType() { return string("var_decl"); }

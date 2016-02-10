@@ -22,6 +22,7 @@ using std::list;
 using std::pair;
 
 #include "cSymbol.h"
+#include "cBaseTypeNode.h"
 
 class cSymbolTable
 {
@@ -96,9 +97,17 @@ class cSymbolTable
         // Initialize the global symobl table
         void InitRootTable()
         {
-            Insert(new cSymbol("char"));
-            Insert(new cSymbol("int"));
-            Insert(new cSymbol("float"));
+            cSymbol *symbol = new cSymbol("char");
+            symbol.SetDecl(new cBaseTypeNode(1, false));
+            Insert(symbol);
+
+            symbol = new cSymbol("int");
+            symbol.SetDecl(new cBaseTypeNode(4, false));
+            Insert(symbol);
+
+            symbol = new cSymbol("float");
+            symbol.SetDecl(new cBaseTypeNode(8, true));
+            Insert(symbol);
         }
 
     protected:

@@ -11,6 +11,7 @@
 //
 
 #include <iostream>
+#include <string>
 #include "lex.h"
 #include "astnodes.h"
 
@@ -39,6 +40,12 @@
     }
 
 %{
+    #define CHECK_ERROR() { if (g_semanticErrorHappened) \
+        { g_semanticErrorHappened = false; } }
+
+    #define PROP_ERROR() { if (g_semanticErrorHappened) \
+        { g_semanticErrorHappened = false; YYERROR; } }
+
     // function to call when errors happen
     int yyerror(const char *msg);
 
@@ -114,7 +121,7 @@ decl:       var_decl ';'        { $$ = $1; }
         |   func_decl           {}
         |   error ';'           {}
 
-var_decl:   TYPE_ID IDENTIFIER  { $$ = new cVarDeclNode($1, $2); }
+var_decl:   TYPE_ID IDENTIFIER  { $$ = new cVarDeclNode($1, $2); CHECK_ERROR(); }
 var_decl:   STRUCT IDENTIFIER IDENTIFIER { $$ = new cVarDeclNode($2, $3); }
 
 struct_decl:  STRUCT open decls close IDENTIFIER    
@@ -180,7 +187,7 @@ func_call:  IDENTIFIER '(' params ')' { $$ = new cFuncExprNode($1, $3); }
         |   IDENTIFIER '(' ')'  { $$ = new cFuncExprNode($1, nullptr); }
 
 varref:   varref '.' varpart    { $1->AddChild($3); }
-        | varpart               { $$ = new cVarExprNode($1); }
+        | varpart               { $$ = new cVarExprNode($1); CHECK_ERROR(); }
 
 varpart:  IDENTIFIER            { $$ = $1; }
 
@@ -214,4 +221,13 @@ int yyerror(const char *msg)
         << yytext << " on line " << yylineno << "\n";
 
     return 0;
+}
+
+// Function that gets called when a semantic error happens
+void SemanticError(std::string error)
+{
+    std::cout << "ERROR: " << error << " on line " 
+              << yylineno << "\n";
+    g_semanticErrorHappened = true;
+    yynerrs++;
 }
