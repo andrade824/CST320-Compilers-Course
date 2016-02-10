@@ -28,6 +28,9 @@ class cBaseTypeNode : public cDeclNode
         virtual bool isFloat() { return m_isFloat; }
         virtual int GetSize() { return m_size; }
 
+        // Return back this base type as the type
+        virtual cDeclNode * GetType() { return this; }
+
         virtual string NodeType() { return string(""); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 

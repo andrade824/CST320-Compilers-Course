@@ -49,6 +49,9 @@ class cFuncDeclNode : public cDeclNode
             AddChild(stmts);
         }
 
+        // Return back this func decl as the type
+        virtual cDeclNode * GetType() { return this; }
+
         virtual string NodeType() { return string("func"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

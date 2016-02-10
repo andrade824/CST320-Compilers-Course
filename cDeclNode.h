@@ -23,4 +23,6 @@ class cDeclNode : public cAstNode
     	virtual int GetSize() { return 0; }
     	virtual bool isFunc() { return false; }
     	virtual bool isStruct() { return false; }
+
+    	virtual cDeclNode * GetType() = 0;
 };

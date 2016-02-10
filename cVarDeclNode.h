@@ -18,7 +18,7 @@ class cVarDeclNode : public cDeclNode
 {
     public:
         // Variable declaration node
-        cVarDeclNode(cSymbol *type, cSymbol* name) : cDeclNode() 
+        cVarDeclNode(cSymbol *type, cSymbol* name) : cDeclNode(), m_type(type)
         {
             if(g_SymbolTable.FindLocal(name->GetName()))
             {
@@ -31,12 +31,7 @@ class cVarDeclNode : public cDeclNode
                 if(g_SymbolTable.Find(name->GetName()))
                     name = new cSymbol(name->GetName());
 
-                // If the type is a struct, pass the declaration on
-                if(type->GetDecl()->isStruct())
-                    name->SetDecl(type->GetDecl());
-                else
-                    name->SetDecl(this);
-
+                name->SetDecl(this);
                 g_SymbolTable.Insert(name);
             }
 
@@ -47,6 +42,12 @@ class cVarDeclNode : public cDeclNode
         // Declaration information getters
         virtual bool isVar() { return true; }
 
+        // Return back the type of the variable this declaration represents
+        virtual cDeclNode * GetType() { return m_type->GetDecl(); }
+
         virtual string NodeType() { return string("var_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+    private:
+        cSymbol *m_type;    // Reference to the type of this variable
 };

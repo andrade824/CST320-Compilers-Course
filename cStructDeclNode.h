@@ -31,16 +31,21 @@ class cStructDeclNode : public cDeclNode
             g_SymbolTable.Insert(name);
         }
 
+        // Return back a symbol (field) in the struct's symbol table
+        cSymbol * GetField(const string& name)
+        {
+            return g_SymbolTable.FindInTable(table, name);
+        }
+
         // Declaration information getters
         virtual bool isStruct() { return true; }
-        virtual bool isVar() { return true; }
-        
-        // Return back the symbol table that includes the structure member variable symbols
-        cSymbolTable::symbolTable_t * GetSymbolTable() { return table; }
+
+        // Return back this struct decl as the type
+        virtual cDeclNode * GetType() { return this; }
 
         virtual string NodeType() { return string("struct_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 
 protected:
-    cSymbolTable::symbolTable_t *table;   // The symbol table that contains the structure member symbols
+    cSymbolTable::symbolTable_t *table;   // The symbol table that contains the structure field symbols
 };
