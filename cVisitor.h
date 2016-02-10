@@ -25,6 +25,7 @@ class cStructDeclNode;
 class cVarDeclNode;
 class cVarExprNode;
 class cWhileNode;
+class cBaseTypeNode;
 
 class cVisitor
 {
@@ -58,7 +59,8 @@ class cVisitor
         virtual void Visit(cVarDeclNode *node);
         virtual void Visit(cVarExprNode *node);
         virtual void Visit(cWhileNode *node);
-
+        virtual void Visit(cBaseTypeNode *node);
+        
     protected:
         void PreVisitAllNodes(cAstNode *node);
         void PostVisitAllNodes(cAstNode *node);

@@ -16,7 +16,7 @@
 using std::string;
 
 #include "cAstNode.h"
-#include "cDeclNode"
+#include "cDeclNode.h"
 
 class cSymbol : public cAstNode
 {
@@ -32,6 +32,9 @@ class cSymbol : public cAstNode
         // return name of symbol
         string GetName() { return m_name; }
 
+        // Change the symbols name
+        void SetName(const string& name) { m_name = name; }
+
         // Getter and setter for declaration
         cDeclNode * GetDecl() { return m_decl; }
         void SetDecl(cDeclNode *decl) { m_decl = decl; }
@@ -46,6 +49,8 @@ class cSymbol : public cAstNode
 
         virtual string NodeType() { return string("sym"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        virtual ~cSymbol() { }
     protected:
         static long long nextId;        // Next avail symbol ID
         long long m_id;                 // Unique ID for this symbol

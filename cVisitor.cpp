@@ -50,3 +50,4 @@ void cVisitor::Visit(cStructDeclNode *node)   { VisitAllChildren(node); }
 void cVisitor::Visit(cVarDeclNode *node)      { VisitAllChildren(node); }
 void cVisitor::Visit(cVarExprNode *node)      { VisitAllChildren(node); }
 void cVisitor::Visit(cWhileNode *node)        { VisitAllChildren(node); }
+void cVisitor::Visit(cBaseTypeNode *node)     { VisitAllChildren(node); }

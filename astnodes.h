@@ -35,3 +35,4 @@
 #include "cFuncDeclNode.h"
 #include "cParamListNode.h"
 #include "cFuncExprNode.h"
+#include "cBaseTypeNode.h"

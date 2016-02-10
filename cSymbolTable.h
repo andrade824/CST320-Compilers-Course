@@ -98,27 +98,22 @@ class cSymbolTable
         void InitRootTable()
         {
             cSymbol *symbol = new cSymbol("char");
-            symbol.SetDecl(new cBaseTypeNode(1, false));
+            symbol->SetDecl(new cBaseTypeNode(1, false));
             Insert(symbol);
 
             symbol = new cSymbol("int");
-            symbol.SetDecl(new cBaseTypeNode(4, false));
+            symbol->SetDecl(new cBaseTypeNode(4, false));
             Insert(symbol);
 
             symbol = new cSymbol("float");
-            symbol.SetDecl(new cBaseTypeNode(8, true));
+            symbol->SetDecl(new cBaseTypeNode(8, true));
             Insert(symbol);
         }
-
-    protected:
-        // list of symbol tables. The list contains the different levels
-        // in the nested table.
-        list<symbolTable_t *> m_SymbolTable;
 
         // Utility routine to do a lookup in a single level's table
         // params are the table to do the lookup in and the name of the symbol
         // Returns nullptr if the symbol isn't found.
-        cSymbol *FindInTable(symbolTable_t *table, string& name)
+        cSymbol *FindInTable(symbolTable_t *table, const string& name)
         {
             symbolTable_t::const_iterator got = table->find(name);
 
@@ -127,6 +122,11 @@ class cSymbolTable
             else
                 return got->second;
         }
+
+    protected:
+        // list of symbol tables. The list contains the different levels
+        // in the nested table.
+        list<symbolTable_t *> m_SymbolTable;
 };
 
 // Declaration for the global symbol table.

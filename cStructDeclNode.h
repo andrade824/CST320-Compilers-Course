@@ -25,13 +25,18 @@ class cStructDeclNode : public cDeclNode
             if(g_SymbolTable.Find(name->GetName()))
                 name = new cSymbol(name->GetName());
 
+            name->SetDecl(this);
             AddChild(decls);
             AddChild(name);
             g_SymbolTable.Insert(name);
         }
 
+        // Declaration information getters
+        virtual bool isStruct() { return true; }
+        virtual bool isVar() { return true; }
+        
         // Return back the symbol table that includes the structure member variable symbols
-        cSymbolTable::symbolTable_t * GetSymbolTable() const { return table; }
+        cSymbolTable::symbolTable_t * GetSymbolTable() { return table; }
 
         virtual string NodeType() { return string("struct_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

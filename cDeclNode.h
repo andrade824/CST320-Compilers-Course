@@ -10,7 +10,6 @@
 //
 // Date: Jan. 18, 2015
 //
-
 #include "cAstNode.h"
 
 class cDeclNode : public cAstNode

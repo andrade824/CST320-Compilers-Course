@@ -31,12 +31,21 @@ class cVarDeclNode : public cDeclNode
                 if(g_SymbolTable.Find(name->GetName()))
                     name = new cSymbol(name->GetName());
 
+                // If the type is a struct, pass the declaration on
+                if(type->GetDecl()->isStruct())
+                    name->SetDecl(type->GetDecl());
+                else
+                    name->SetDecl(this);
+
                 g_SymbolTable.Insert(name);
             }
 
             AddChild(type);
             AddChild(name);
         }
+
+        // Declaration information getters
+        virtual bool isVar() { return true; }
 
         virtual string NodeType() { return string("var_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
