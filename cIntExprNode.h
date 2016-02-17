@@ -13,8 +13,11 @@
 // Date: Jan. 18, 2015
 //
 
+#include <climits>
 #include "cAstNode.h"
 #include "cExprNode.h"
+#include "cDeclNode.h"
+#include "cSymbolTable.h"
 
 class cIntExprNode : public cExprNode
 {
@@ -30,6 +33,15 @@ class cIntExprNode : public cExprNode
             return " value=\"" + std::to_string(m_value) + "\"";
         }
         
+        // Return the type of the variable this expression represents
+        virtual cDeclNode * GetType() 
+        {
+            if(m_value >= CHAR_MIN && m_value <= CHAR_MAX)
+                return g_SymbolTable.Find("char")->GetDecl();
+            else
+                return g_SymbolTable.Find("int")->GetDecl();
+        }
+
         virtual string NodeType() { return string("int"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 

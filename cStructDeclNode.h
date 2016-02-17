@@ -9,16 +9,20 @@
 // Date: Feb. 2, 2016
 //
 
+#include <string>
 #include "cDeclsNode.h"
+#include "cDeclNode.h"
 #include "cSymbolTable.h"
 #include "cSymbol.h"
+
+using std::string;
 
 class cStructDeclNode : public cDeclNode
 {
     public:
         // Variable declaration node
         cStructDeclNode(cSymbolTable::symbolTable_t *scope, cDeclsNode *decls, cSymbol* name) 
-            : cDeclNode(), table(scope)
+            : cDeclNode(), m_name(name->GetName()), table(scope)
         {
             // Create a new symbol for the innermost scope
             // if a symbol already exists in an outer scope somewhere
@@ -40,6 +44,9 @@ class cStructDeclNode : public cDeclNode
         // Declaration information getters
         virtual bool isStruct() { return true; }
 
+        // Return back the identifier for this struct declaration
+        virtual string GetTypeName() { return m_name; }
+
         // Return back this struct decl as the type
         virtual cDeclNode * GetType() { return this; }
 
@@ -47,5 +54,6 @@ class cStructDeclNode : public cDeclNode
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 
 protected:
+    string m_name;
     cSymbolTable::symbolTable_t *table;   // The symbol table that contains the structure field symbols
 };

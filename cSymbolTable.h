@@ -98,15 +98,15 @@ class cSymbolTable
         void InitRootTable()
         {
             cSymbol *symbol = new cSymbol("char");
-            symbol->SetDecl(new cBaseTypeNode(1, false));
+            symbol->SetDecl(new cBaseTypeNode("char", 1, false));
             Insert(symbol);
 
             symbol = new cSymbol("int");
-            symbol->SetDecl(new cBaseTypeNode(4, false));
+            symbol->SetDecl(new cBaseTypeNode("int", 4, false));
             Insert(symbol);
 
             symbol = new cSymbol("float");
-            symbol->SetDecl(new cBaseTypeNode(8, true));
+            symbol->SetDecl(new cBaseTypeNode("float", 8, true));
             Insert(symbol);
         }
 

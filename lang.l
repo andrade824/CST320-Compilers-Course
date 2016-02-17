@@ -69,11 +69,11 @@ identifier [a-zA-Z_][a-zA-Z0-9_]*
                                 }
                                 DO_RETURN(IDENTIFIER);
                             }
-[0-9]+                      {
+-?[0-9]+                    {
                                 yylval.int_val = atoi(yytext); 
                                 DO_RETURN(INT_VAL); 
                             }
-[0-9]+\.[0-9]+              {
+-?[0-9]+\.[0-9]+            {
                               yylval.float_val = atof(yytext); 
                               DO_RETURN(FLOAT_VAL);
                             }

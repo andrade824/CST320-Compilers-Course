@@ -23,6 +23,11 @@ class cDeclNode : public cAstNode
     	virtual int GetSize() { return 0; }
     	virtual bool isFunc() { return false; }
     	virtual bool isStruct() { return false; }
+        virtual bool isNum() { return (!isFunc() && !isStruct() && !isVar()); }
 
+        // Get the symbolic name of the declaration (the type name)
+        virtual string GetTypeName() = 0;
+
+        // Get the type of this declaration
     	virtual cDeclNode * GetType() = 0;
 };

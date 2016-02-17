@@ -20,13 +20,16 @@ class cBaseTypeNode : public cDeclNode
 {
     public:
         // Base type declaration node
-        cBaseTypeNode(int size, bool isFloat) 
-            : cDeclNode(), m_size(size), m_isFloat(isFloat)
+        cBaseTypeNode(string name, int size, bool isFloat) 
+            : cDeclNode(), m_name(name), m_size(size), m_isFloat(isFloat)
         { }
 
         // Declaration information getters
         virtual bool isFloat() { return m_isFloat; }
         virtual int GetSize() { return m_size; }
+
+        // Return back the name of this declaration
+        virtual string GetTypeName() { return m_name; }
 
         // Return back this base type as the type
         virtual cDeclNode * GetType() { return this; }
@@ -35,6 +38,7 @@ class cBaseTypeNode : public cDeclNode
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 
     protected:
+        string m_name;
         int m_size;
         bool m_isFloat;
 };

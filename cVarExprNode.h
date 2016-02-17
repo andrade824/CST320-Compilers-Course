@@ -16,21 +16,18 @@
 #include "semantic.h" 
 using std::string;
 
-/**
- * 1. Do i need weird temp string for error messages
- * 2. If statement in VarDeclNode
- * 3. Should cStructDeclNode have isVar return true
- */
-
 class cVarExprNode : public cExprNode
 {
     public:
         // Variable declaration node
         cVarExprNode(cSymbol* name) : cExprNode() 
         {
-            if(g_SymbolTable.Find(name->GetName()) == nullptr)
+            cSymbol *var = g_SymbolTable.Find(name->GetName());
+            if(var == nullptr)
                 SemanticError("Symbol " + name->GetName() + " not defined");
-            
+            else if(var->GetDecl()->isFunc())
+                SemanticError(var->GetName() + " is not an lval");
+
             AddChild(name);
         }
 
@@ -50,12 +47,7 @@ class cVarExprNode : public cExprNode
                 if(elem == nullptr)
                     SemanticError(symbol->GetName() + " is not a field of " + GetName());
                 else
-                {
-                    // We don't want the dummy symbol created by the scanner
-                    // Use the symbol in the struct's decls instead
-                    delete symbol;
                     AddChild(elem);
-                }
             }
             else
                 SemanticError(GetName() + " is not a struct");
@@ -72,6 +64,13 @@ class cVarExprNode : public cExprNode
             temp += dynamic_cast<cSymbol *>(GetChild(NumChildren() - 1))->GetName();
 
             return temp;
+        }
+
+        // Return the type of the variable this expression represents
+        virtual cDeclNode * GetType() 
+        {
+            cSymbol *var = dynamic_cast<cSymbol*>(GetChild(NumChildren() - 1));
+            return var->GetDecl()->GetType();
         }
 
         virtual string NodeType() { return string("varref"); }

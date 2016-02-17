@@ -42,6 +42,9 @@ class cVarDeclNode : public cDeclNode
         // Declaration information getters
         virtual bool isVar() { return true; }
 
+        // Return back the variable's type name
+        virtual string GetTypeName() { return m_type->GetName(); }
+
         // Return back the type of the variable this declaration represents
         virtual cDeclNode * GetType() { return m_type->GetDecl(); }
 

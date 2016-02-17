@@ -119,7 +119,7 @@ decls:      decls decl          {
 
 decl:       var_decl ';'        { $$ = $1; }
         |   struct_decl ';'     { $$ = $1; }
-        |   func_decl           {}
+        |   func_decl           { $$ = $1; }
         |   error ';'           {}
 
 var_decl:   TYPE_ID IDENTIFIER  { $$ = new cVarDeclNode($1, $2); CHECK_ERROR(); }
@@ -129,32 +129,41 @@ struct_decl:  STRUCT open decls close IDENTIFIER
                                 { $$ = new cStructDeclNode($2, $3, $5); }
 func_decl:  func_header ';'
                                 {
+                                    $1->InsertDecls(nullptr);
+                                    $1->InsertStmts(nullptr);
                                     g_SymbolTable.DecreaseScope();
                                     $$ = $1;
                                 }
         |   func_header  '{' decls stmts '}'
                                 {
-                                    $1->Insert($3);
-                                    $1->Insert($4);
+                                    $1->InsertDecls($3);
+                                    $1->InsertStmts($4);
                                     g_SymbolTable.DecreaseScope();
                                     $$ = $1;
                                 }
         |   func_header  '{' stmts '}'
                                 {
-                                    $1->Insert($3);
+                                    $1->InsertDecls(nullptr);
+                                    $1->InsertStmts($3);
                                     g_SymbolTable.DecreaseScope();
                                     $$ = $1;
                                 }
 func_header: func_prefix paramsspec ')'
                                 {
-                                    $1->Insert($2); 
-                                    $$ = $1; 
+                                    $1->InsertParams($2); 
+                                    $$ = $1;
+                                    CHECK_ERROR();
                                 }
-        |    func_prefix ')'    { $$ = $1; }
+        |    func_prefix ')'    {
+                                    $1->InsertParams(nullptr);
+                                    $$ = $1;
+                                    CHECK_ERROR();
+                                }
 func_prefix: TYPE_ID IDENTIFIER '('
                                 {
                                     $$ = new cFuncDeclNode($1, $2);
                                     g_SymbolTable.IncreaseScope();
+                                    CHECK_ERROR();
                                 }
 paramsspec:     
             paramsspec',' paramspec 
@@ -177,9 +186,9 @@ stmt:       IF '(' expr ')' stmts ENDIF ';'
                                 { $$ = new cWhileNode($3, $5); }
         |   PRINT '(' expr ')' ';'
                                 { $$ = new cPrintNode($3); }
-        |   lval '=' expr ';'   { $$ = new cAssignNode($1, $3); }
-        |   lval '=' func_call ';'   { $$ = new cAssignNode($1, $3); }
-        |   func_call ';'       { $$ = $1; }
+        |   lval '=' expr ';'   { $$ = new cAssignNode($1, $3); CHECK_ERROR(); }
+        |   lval '=' func_call ';'   { $$ = new cAssignNode($1, $3); CHECK_ERROR(); }
+        |   func_call ';'       { $$ = $1; CHECK_ERROR(); }
         |   block               { $$ = $1; }
         |   RETURN expr ';'     { $$ = new cReturnNode($2); }
         |   error ';'           {}
