@@ -10,13 +10,14 @@
 //
 
 #include <string>
+#include "langparse.h"
 #include "cAstNode.h"
 using std::string;
 
 class cOpNode : public cAstNode
 {
     public:
-        cOpNode(string op) : cAstNode()
+        cOpNode(int op) : cAstNode()
         {
             m_op = op;
         }
@@ -25,11 +26,22 @@ class cOpNode : public cAstNode
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 
         virtual string AttributesToString()   
-        { 
-            return string(" value='") + m_op + "'";
+        {
+            string temp = " value='";
+
+            switch(m_op)
+            {
+                case EQUALS: temp += "=="; break;
+
+                default: temp += static_cast<char>(m_op); break;
+            }
+
+            temp += "'";
+
+            return temp;
         }
         
     protected:
-        string m_op;      // the operand
+        int m_op;      // the operand
 };
 

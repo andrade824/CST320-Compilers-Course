@@ -208,16 +208,16 @@ params:     params',' param     { $1->Insert($3); }
 
 param:      expr                { $$ = $1; }
 
-expr:       expr EQUALS addit   { $$ = new cBinaryExprNode($1, new cOpNode("=="), $3); }
+expr:       expr EQUALS addit   { $$ = new cBinaryExprNode($1, new cOpNode(EQUALS), $3); }
         |   addit               { $$ = $1; }
 
-addit:      addit '+' term      { $$ = new cBinaryExprNode($1, new cOpNode("+"), $3); }
-        |   addit '-' term      { $$ = new cBinaryExprNode($1, new cOpNode("-"), $3); }
+addit:      addit '+' term      { $$ = new cBinaryExprNode($1, new cOpNode('+'), $3); }
+        |   addit '-' term      { $$ = new cBinaryExprNode($1, new cOpNode('-'), $3); }
         |   term                { $$ = $1; }
 
-term:       term '*' fact       { $$ = new cBinaryExprNode($1, new cOpNode("*"), $3); }
-        |   term '/' fact       { $$ = new cBinaryExprNode($1, new cOpNode("/"), $3); }
-        |   term '%' fact       { $$ = new cBinaryExprNode($1, new cOpNode("%"), $3); }
+term:       term '*' fact       { $$ = new cBinaryExprNode($1, new cOpNode('*'), $3); }
+        |   term '/' fact       { $$ = new cBinaryExprNode($1, new cOpNode('/'), $3); }
+        |   term '%' fact       { $$ = new cBinaryExprNode($1, new cOpNode('%'), $3); }
         |   fact                { $$ = $1; }
 
 fact:       '(' expr ')'        { $$ = $2; }
