@@ -22,7 +22,7 @@ class cBlockNode : public cStmtNode
     public:
         // params are the decls and statements contained in the block
         cBlockNode(cDeclsNode *decls, cStmtsNode *statements)
-            : cStmtNode(), m_size(decls->GetSize())
+            : cStmtNode(), m_size(0)
         {
             AddChild(decls);
             AddChild(statements);
@@ -30,6 +30,7 @@ class cBlockNode : public cStmtNode
 
         // Getters and setters
         int GetSize() { return m_size; }
+        void SetSize(int size) { m_size = size; }
 
         virtual string NodeType() { return string("block"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

@@ -17,7 +17,7 @@ class cDeclsNode : public cAstNode
 {
     public:
         // param is the first decl in this decls
-        cDeclsNode(cDeclNode *decl) : cAstNode(), m_size(decl->GetSize())
+        cDeclsNode(cDeclNode *decl) : cAstNode(), m_size(0)
         {
             AddChild(decl);
         }
@@ -26,11 +26,11 @@ class cDeclsNode : public cAstNode
         void Insert(cDeclNode *decl)
         {
             AddChild(decl);
-            m_size += decl->GetSize();
         }
 
         // Getters and setters
         int GetSize() { return m_size; }
+        void SetSize(int size) { m_size = size; }
 
         virtual string NodeType() { return string("decls"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

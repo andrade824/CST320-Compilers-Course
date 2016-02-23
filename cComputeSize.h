@@ -10,7 +10,11 @@ public:
 
     // Visit functions
     virtual void Visit(cBlockNode *node);
+    virtual void Visit(cDeclsNode *node);
     virtual void Visit(cVarDeclNode *node);
+
+private:
+    int Align(int size);
 
 private:
     int m_offset;
