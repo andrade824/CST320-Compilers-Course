@@ -19,6 +19,7 @@
 #include "cSymbol.h"
 #include "cSymbolTable.h"
 #include "lex.h"
+#include "cComputeSize.h"
 
 cSymbolTable g_SymbolTable;
 bool g_semanticErrorHappened = false;
@@ -63,6 +64,8 @@ int main(int argc, char **argv)
     {
         if (result == 0)
         {
+            cComputeSize sizer;
+            sizer.VisitAllNodes(yyast_root);
             output << yyast_root->ToString() << std::endl;
         } else {
             output << yynerrs << " Errors in compile\n";

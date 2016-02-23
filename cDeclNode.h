@@ -15,12 +15,14 @@
 class cDeclNode : public cAstNode
 {
     public:
-        cDeclNode() : cAstNode() {}
+        cDeclNode(int size = 0) : cAstNode(), m_size(size), m_offset(0) {}
 
         // Declaration information getters
     	virtual bool isVar() { return false; }
     	virtual bool isFloat() { return false; }
-    	virtual int GetSize() { return 0; }
+    	virtual int GetSize() {return m_size; }
+        virtual int GetOffset() { return m_offset; }
+        virtual void SetOffset(int offset) { m_offset = offset; }
     	virtual bool isFunc() { return false; }
     	virtual bool isStruct() { return false; }
         virtual bool isNum() { return (!isFunc() && !isStruct() && !isVar()); }
@@ -30,4 +32,16 @@ class cDeclNode : public cAstNode
 
         // Get the type of this declaration
     	virtual cDeclNode * GetType() = 0;
+
+        virtual string AttributesToString() 
+        {
+            if(!m_size && !m_offset)
+                return "";
+            else
+                return " size=\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) + "\"";
+        }
+
+    protected:
+        int m_size;
+        int m_offset;
 };

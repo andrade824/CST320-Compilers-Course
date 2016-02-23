@@ -17,7 +17,7 @@ class cDeclsNode : public cAstNode
 {
     public:
         // param is the first decl in this decls
-        cDeclsNode(cDeclNode *decl) : cAstNode()
+        cDeclsNode(cDeclNode *decl) : cAstNode(), m_size(decl->GetSize())
         {
             AddChild(decl);
         }
@@ -26,8 +26,23 @@ class cDeclsNode : public cAstNode
         void Insert(cDeclNode *decl)
         {
             AddChild(decl);
+            m_size += decl->GetSize();
         }
+
+        // Getters and setters
+        int GetSize() { return m_size; }
 
         virtual string NodeType() { return string("decls"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        virtual string AttributesToString() 
+        {
+            if(m_size)
+                return " size=\"" + std::to_string(m_size) + "\"";
+            else
+                return "";
+        }
+
+    private:
+        int m_size;
 };
