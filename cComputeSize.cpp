@@ -16,6 +16,7 @@ int cComputeSize::Align(int size)
     return temp;
 }
 
+/** Visit Functions for various node types **/
 void cComputeSize::VisitAllNodes(cAstNode *node)
 {
     VisitAllChildren(node);
@@ -38,16 +39,85 @@ void cComputeSize::Visit(cBlockNode *node)
 
 void cComputeSize::Visit(cDeclsNode *node)
 {
-    int temp = m_offset;
+    int old_offset = m_offset;
 
     VisitAllChildren(node);
 
-    node->SetSize(m_offset - temp);
+    node->SetSize(m_offset - old_offset);
+}
+
+void cComputeSize::Visit(cStructDeclNode *node)
+{
+    int old_offset = m_offset;
+    m_offset = 0;
+
+    VisitAllChildren(node);
+
+    node->SetSize(m_offset);
+    m_offset = old_offset;
+}
+
+void cComputeSize::Visit(cFuncDeclNode *node)
+{
+    int old_offset = m_offset;
+    int old_highwater = m_highwater;
+    m_offset = 0;
+    m_highwater = 0;
+
+    VisitAllChildren(node);
+
+    node->SetSize(Align(m_highwater));
+    m_offset = old_offset;
+    m_highwater = old_highwater;
+}
+
+void cComputeSize::Visit(cParamsNode *node)
+{
+    int old_offset = m_offset;
+
+    cAstNode::iterator it;
+    for (it=node->FirstChild(); it!=node->LastChild(); it++)
+    {
+        if ((*it) != nullptr) (*it)->Visit(this);
+        m_offset = Align(m_offset);
+    }
+    
+    node->SetSize(m_offset - old_offset);
 }
 
 void cComputeSize::Visit(cVarDeclNode *node)
 {
-    node->SetOffset(Align(m_offset));
-    m_offset = Align(m_offset) + node->GetSize();
+    node->SetSize(node->GetType()->GetSize());
+
+    // Don't align chars
+    if(node->GetType()->isNum() && node->GetType()->GetSize() == 1)
+    {
+        node->SetOffset(m_offset);
+        m_offset = m_offset + node->GetSize();
+    }
+    else
+    {
+        node->SetOffset(Align(m_offset));
+        m_offset = Align(m_offset) + node->GetSize();
+    }
+
     if (m_offset > m_highwater) m_highwater = m_offset;
+}
+
+void cComputeSize::Visit(cVarExprNode *node)
+{
+    int old_offset = m_offset;
+    m_offset = 0;
+
+    VisitAllChildren(node);
+
+    node->SetSize(node->GetDecl()->GetSize());
+    node->SetOffset(m_offset);
+    
+    m_offset = old_offset;
+}
+
+void cComputeSize::Visit(cSymbol *node)
+{
+    m_offset += node->GetDecl()->GetOffset();
 }

@@ -16,7 +16,7 @@ class cParamsNode : public cAstNode
 {
     public:
         // Constructor for a list of arguments node
-        cParamsNode(cDeclNode *decl) : cAstNode()
+        cParamsNode(cDeclNode *decl) : cAstNode(), m_size(0)
         {
             AddChild(decl);
         }
@@ -27,6 +27,21 @@ class cParamsNode : public cAstNode
             AddChild(decl);
         }
 
+        // Getters and Setters
+        int GetSize() { return m_size; }
+        void SetSize(int size) { m_size = size; }
+
         virtual string NodeType() { return string("args"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+    
+        virtual string AttributesToString() 
+        {
+            if(m_size)
+                return " size=\"" + std::to_string(m_size) + "\"";
+            else
+                return "";
+        }
+
+    private:
+        int m_size;
 };

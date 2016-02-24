@@ -21,8 +21,10 @@ class cBaseTypeNode : public cDeclNode
     public:
         // Base type declaration node
         cBaseTypeNode(string name, int size, bool isFloat) 
-            : cDeclNode(size), m_name(name), m_isFloat(isFloat)
-        { }
+            : cDeclNode(), m_name(name), m_isFloat(isFloat)
+        {
+            m_size = size;
+        }
 
         // Declaration information getters
         virtual bool isFloat() { return m_isFloat; }

@@ -15,12 +15,13 @@
 class cDeclNode : public cAstNode
 {
     public:
-        cDeclNode(int size = 0) : cAstNode(), m_size(size), m_offset(0) {}
+        cDeclNode() : cAstNode(), m_size(0), m_offset(0) {}
 
         // Declaration information getters
     	virtual bool isVar() { return false; }
     	virtual bool isFloat() { return false; }
     	virtual int GetSize() {return m_size; }
+        virtual void SetSize(int size) { m_size = size; }
         virtual int GetOffset() { return m_offset; }
         virtual void SetOffset(int offset) { m_offset = offset; }
     	virtual bool isFunc() { return false; }

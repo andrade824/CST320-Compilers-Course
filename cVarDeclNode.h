@@ -18,7 +18,7 @@ class cVarDeclNode : public cDeclNode
 {
     public:
         // Variable declaration node
-        cVarDeclNode(cSymbol *type, cSymbol* name) : cDeclNode(type->GetDecl()->GetSize()), m_type(type)
+        cVarDeclNode(cSymbol *type, cSymbol* name) : cDeclNode(), m_type(type)
         {
             if(g_SymbolTable.FindLocal(name->GetName()))
             {
