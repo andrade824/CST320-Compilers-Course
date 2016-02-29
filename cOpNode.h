@@ -32,6 +32,7 @@ class cOpNode : public cAstNode
             switch(m_op)
             {
                 case EQUALS: temp += "=="; break;
+                case NOTEQUALS: temp += "!="; break;
 
                 default: temp += static_cast<char>(m_op); break;
             }

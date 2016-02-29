@@ -77,6 +77,7 @@ identifier [a-zA-Z_][a-zA-Z0-9_]*
                               yylval.float_val = atof(yytext); 
                               DO_RETURN(FLOAT_VAL);
                             }
+"!="                        DO_RETURN(NOTEQUALS);
 "=="                        DO_RETURN(EQUALS);
 "&&"                        DO_RETURN(AND);
 "||"                        DO_RETURN(OR);

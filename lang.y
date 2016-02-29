@@ -65,7 +65,7 @@
 %token  WHILE IF ELSE ENDIF
 %token  STRUCT
 %token  RETURN
-%token  AND OR EQUALS
+%token  AND OR EQUALS NOTEQUALS
 %token  JUNK_TOKEN
 
  /* NOTE: you will have to change some of these as you complete your lab */
@@ -209,6 +209,7 @@ params:     params',' param     { $1->Insert($3); }
 param:      expr                { $$ = $1; }
 
 expr:       expr EQUALS addit   { $$ = new cBinaryExprNode($1, new cOpNode(EQUALS), $3); }
+        |   expr NOTEQUALS addit   { $$ = new cBinaryExprNode($1, new cOpNode(NOTEQUALS), $3); }
         |   addit               { $$ = $1; }
 
 addit:      addit '+' term      { $$ = new cBinaryExprNode($1, new cOpNode('+'), $3); }
