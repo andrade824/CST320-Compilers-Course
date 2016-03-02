@@ -42,6 +42,9 @@ class cIntExprNode : public cExprNode
                 return g_SymbolTable.Find("int")->GetDecl();
         }
 
+        // Return back the value of this expression
+        int GetValue() { return m_value; }
+
         virtual string NodeType() { return string("int"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 

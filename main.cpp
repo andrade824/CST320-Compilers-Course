@@ -16,10 +16,13 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "cSymbol.h"
 #include "cSymbolTable.h"
 #include "lex.h"
 #include "cComputeSize.h"
+#include "cCodeGen.h"
+using std::string;
 
 cSymbolTable g_SymbolTable;
 bool g_semanticErrorHappened = false;
@@ -43,19 +46,24 @@ int main(int argc, char **argv)
     }
 
     if (argc > 2)
+    {
         outfile_name = argv[2];
-    else
-        outfile_name = "/dev/tty";
+    } else {
+        //outfile_name = "/dev/tty";
+        outfile_name = "langout";
+    }
 
-    std::streambuf *cout_buf = std::cout.rdbuf();
+    /*
     std::ofstream output(outfile_name);
-
     if (!output.is_open())
     {
-        std::cerr << "Unable to open output file " << outfile_name << "\n";
+        std::cerr << "ERROR: Unable to open file " << outfile_name << "\n";
         exit(-1);
     }
+
+    // fixup cout so it redirects to output
     std::cout.rdbuf(output.rdbuf());
+    */
 
     g_SymbolTable.InitRootTable();
 
@@ -66,19 +74,33 @@ int main(int argc, char **argv)
         {
             cComputeSize sizer;
             sizer.VisitAllNodes(yyast_root);
-            output << yyast_root->ToString() << std::endl;
+
+            //output << yyast_root->ToString() << std::endl;
+
+            cCodeGen coder(string(outfile_name) + ".c");
+            coder.VisitAllNodes(yyast_root);
+
+            /*
+            string cmd = "gcc -g -O0 -o " + 
+                outfile_name + " " + outfile_name + ".c";
+            system(cmd.c_str());
+            */
         } else {
-            output << yynerrs << " Errors in compile\n";
+            std::cerr << yynerrs << " Errors in compile\n";
         }
     }
 
     if (result == 0 && yylex() != 0)
     {
-        std::cout << "Junk at end of program\n";
+        std::cerr << "Junk at end of program\n";
     }
 
+    /*
+    // close output and fixup cout
+    // If these aren't done, you may get a segfault on program exit
     output.close();
     std::cout.rdbuf(cout_buf);
+    */
 
     return result;
 }

@@ -36,6 +36,11 @@ class cBinaryExprNode : public cExprNode
         // Return the type of the variable this expression represents
         virtual cDeclNode * GetType() { return m_type; }
 
+        // Getters
+        cExprNode * GetOperand1() { return (cExprNode*)GetChild(0); }
+        cOpNode * GetOperator() { return (cOpNode*)GetChild(1); }
+        cExprNode * GetOperand2() { return (cExprNode*)GetChild(2); }
+
         virtual string NodeType() { return string("expr"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 
