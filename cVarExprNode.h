@@ -80,6 +80,12 @@ class cVarExprNode : public cExprNode
             return var->GetDecl()->GetType();
         }
 
+        // Return back a cSymbol child node
+        cSymbol * GetSymbol(int num)
+        {
+            return dynamic_cast<cSymbol*>(GetChild(num));
+        }
+
         // Size and offset getters/setters
     	virtual int GetSize() {return m_size; }
         virtual void SetSize(int size) { m_size = size; }

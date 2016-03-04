@@ -16,7 +16,6 @@ public:
     virtual void Visit(cParamsNode *node);
     virtual void Visit(cVarDeclNode *node);
     virtual void Visit(cVarExprNode *node);
-    virtual void Visit(cSymbol *node);
 
 private:
     int Align(int size);

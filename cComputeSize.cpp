@@ -109,15 +109,11 @@ void cComputeSize::Visit(cVarExprNode *node)
     int old_offset = m_offset;
     m_offset = 0;
 
-    VisitAllChildren(node);
+    for(int i = 0; i < node->NumChildren(); ++i)
+        m_offset += node->GetSymbol(i)->GetDecl()->GetOffset();
 
     node->SetSize(node->GetDecl()->GetSize());
     node->SetOffset(m_offset);
     
     m_offset = old_offset;
-}
-
-void cComputeSize::Visit(cSymbol *node)
-{
-    m_offset += node->GetDecl()->GetOffset();
 }

@@ -52,6 +52,36 @@ class cExprNode : public cStmtNode
             return isCompat;
         }
 
+        bool isCompatibleWith(cDeclNode *other)
+        {
+            bool isCompat = true;
+
+            // One side is a struct and the other isn't
+            // The weird "!"s everywhere are a fancy way of doing an XOR logically
+            if(!other->GetType()->isStruct() != !GetType()->isStruct())
+                isCompat = false;
+
+            // If they are both structs, check they're the same type of struct
+            if((GetType()->isStruct() && other->GetType()->isStruct()) &&
+               (GetType() != other->GetType()) )
+                isCompat = false;
+
+            // One side is numeric, but the other isn't
+            if(!GetType()->isNum() != !other->GetType()->isNum())
+                isCompat = false;
+
+            // This is a char/int/float, make sure other expression is char/int/float and smaller/equal
+            if((GetType()->isNum() && other->GetType()->isNum()) &&
+               (other->GetType()->GetSize() < GetType()->GetSize()))
+                isCompat = false;
+
+            // This isn't a float, but the other expression is
+            if(!other->GetType()->isFloat() && GetType()->isFloat())
+                isCompat = false;
+
+            return isCompat;
+        }
+
         // Return back the type of the expression
         virtual cDeclNode * GetType() = 0;
 };

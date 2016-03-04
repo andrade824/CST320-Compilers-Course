@@ -30,8 +30,11 @@ class cFuncExprNode : public cExprNode
                 cFuncDeclNode *decl = dynamic_cast<cFuncDeclNode*>(name->GetDecl());
 
                 if((decl->GetParams() != nullptr && params == nullptr) ||
-                   (decl->GetParams() == nullptr && params != nullptr) ||
-                   (decl->GetParams()->NumChildren() != params->NumChildren()))
+                   (decl->GetParams() == nullptr && params != nullptr))
+                {
+                    SemanticError(name->GetName() + " called with wrong number of arguments");
+                }
+                else if(params != nullptr && (decl->GetParams()->NumChildren() != params->NumChildren()))
                 {
                     SemanticError(name->GetName() + " called with wrong number of arguments");
                 }
@@ -44,7 +47,7 @@ class cFuncExprNode : public cExprNode
                         cExprNode *child = dynamic_cast<cExprNode*>(params->GetChild(i));
                         cDeclNode *otherChild = dynamic_cast<cDeclNode*>(decl->GetParams()->GetChild(i));
 
-                        if(child->GetType() != otherChild->GetType())
+                        if(!child->isCompatibleWith(otherChild))
                             different = true;
                     }
 
