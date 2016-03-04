@@ -123,3 +123,47 @@ void cCodeGen::Visit(cIfNode *node)
         EmitString(endlabel + ":\n");
     }
 }
+
+void cCodeGen::Visit(cWhileNode *node)
+{
+    string looplabel = GenerateLabel();
+    string endlabel = GenerateLabel();
+
+    EmitString(looplabel + ":\n");
+    EmitString("if((");
+    node->GetCond()->Visit(this);
+    EmitString(") == 0) goto " + endlabel + ";\n");
+    node->GetStmt()->Visit(this);
+    EmitString("goto " + looplabel + ";\n");
+    EmitString(endlabel + ":\n");
+}
+
+void cCodeGen::Visit(cFuncDeclNode *node)
+{
+    // Maybe not do anything if stmts and decls are null (aka, this was a function prototype)?
+    
+    m_func_rtn_label = GenerateLabel();
+    StartFunctionOutput(node->GetTypeName());
+
+    // Increment Stack
+
+    // Only print decls/stmts when they exist
+    if(node->GetDecls())
+        node->GetDecls()->Visit(this);
+
+    if(node->GetStmts())
+        node->GetStmts()->Visit(this);
+
+    // Decrement stack
+
+    EmitString(m_func_rtn_label + ":\n");
+    EndFunctionOutput();
+}
+
+void cCodeGen::Visit(cReturnNode *node)
+{
+    EmitString("Temp = ");
+    node->GetValue()->Visit(this);
+    EmitSemicolon();
+    EmitString("goto " + m_func_rtn_label + ";\n");
+}

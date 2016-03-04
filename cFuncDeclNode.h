@@ -116,6 +116,12 @@ class cFuncDeclNode : public cDeclNode
         // Return back this function's parameters
         cParamsNode * GetParams() { return m_params; }
 
+        // Return back this function's declarations
+        cDeclsNode * GetDecls() { return (cDeclsNode *)GetChild(3); }
+
+        // Return back this function's statements
+        cStmtsNode * GetStmts() { return (cStmtsNode *)GetChild(4); }
+
         // Return back the name of this function
         virtual string GetTypeName() { return m_name->GetName(); }
 
