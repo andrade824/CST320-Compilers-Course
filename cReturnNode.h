@@ -22,6 +22,9 @@ class cReturnNode : public cStmtNode
             AddChild(val);
         }
 
+        // Getters
+        cExprNode * GetValue() { return (cExprNode*)GetChild(0); }
+
         virtual string NodeType() { return string("return"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

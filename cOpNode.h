@@ -22,25 +22,26 @@ class cOpNode : public cAstNode
             m_op = op;
         }
 
-        virtual string NodeType()       { return "op"; }
-        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-
-        virtual string AttributesToString()   
+        // Returns back the string representation of the opcode
+        string GetOp()
         {
-            string temp = " value='";
+            string temp;
 
             switch(m_op)
             {
-                case EQUALS: temp += "=="; break;
-                case NOTEQUALS: temp += "!="; break;
+                case EQUALS: temp = "=="; break;
+                case NOTEQUALS: temp = "!="; break;
 
-                default: temp += static_cast<char>(m_op); break;
+                default: temp = static_cast<char>(m_op); break;
             }
-
-            temp += "'";
 
             return temp;
         }
+
+        virtual string NodeType()       { return "op"; }
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        virtual string AttributesToString() { return " value='" + GetOp() + "'"; }
         
     protected:
         int m_op;      // the operand

@@ -14,7 +14,10 @@ OBJS=main.o \
 	 langlex.o \
 	 langparse.o \
 	 cVisitor.o \
-	 cComputeSize.o
+	 cComputeSize.o \
+	 cCodeGen.o \
+	 emit.o
+	 
 
 all: lang
 
@@ -24,6 +27,9 @@ clean:
 	rm -f langparse.c
 	rm -f langparse.h
 	rm -f lang
+	rm -f out
+	rm -f a.out
+	rm -f langout.c
 	rm -f out.xml
 	rm -f out2.xml
 

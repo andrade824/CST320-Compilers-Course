@@ -27,6 +27,10 @@ class cAssignNode : public cStmtNode
             AddChild(rval);
         }
 
+        // Getters
+        cVarExprNode * GetLval() { return (cVarExprNode*)GetChild(0);}
+        cExprNode * GetRval() { return (cExprNode*)GetChild(1);}
+
         virtual string NodeType() { return string("assign"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };
