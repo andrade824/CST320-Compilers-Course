@@ -27,6 +27,9 @@ class cParamListNode : public cAstNode
             AddChild(expr);
         }
 
+        // Get the expressions stored within this parameter list
+        cExprNode * GetExpr(int num) { return (cExprNode*) GetChild(num); }
+
         virtual string NodeType() { return string("params"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

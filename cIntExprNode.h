@@ -44,7 +44,8 @@ class cIntExprNode : public cExprNode
 
         // Return back the value of this expression
         int GetValue() { return m_value; }
-
+        virtual cDeclNode * GetDecl() { return nullptr; }
+        
         virtual string NodeType() { return string("int"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 

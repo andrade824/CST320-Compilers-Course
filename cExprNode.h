@@ -84,4 +84,7 @@ class cExprNode : public cStmtNode
 
         // Return back the type of the expression
         virtual cDeclNode * GetType() = 0;
+
+        // Return back the decl if this is a variable/function
+        virtual cDeclNode * GetDecl() = 0;
 };

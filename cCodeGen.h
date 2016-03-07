@@ -33,5 +33,7 @@ public:
 protected:
     string m_func_rtn_label;
 
-private:
-    void EmitSemicolon();};
+protected:
+    void EmitSemicolon();
+    void PushExpression(cExprNode *node);
+};

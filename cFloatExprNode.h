@@ -32,7 +32,8 @@ class cFloatExprNode : public cExprNode
         
         // Return the type of the variable this expression represents
         virtual cDeclNode * GetType() { return g_SymbolTable.Find("float")->GetDecl(); }
-
+        virtual cDeclNode * GetDecl() { return nullptr; }
+        
         // Return back the value of this expression
         double GetValue() { return m_value; }
 

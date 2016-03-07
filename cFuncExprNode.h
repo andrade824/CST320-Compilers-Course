@@ -9,11 +9,14 @@
 // Date: Feb. 2, 2016
 //
 
+#include <string>
 #include "cExprNode.h"
 #include "cParamListNode.h"
 #include "cSymbol.h"
 #include "cDeclNode.h"
 #include "semantic.h"
+
+using std::string;
 
 class cFuncExprNode : public cExprNode
 {
@@ -62,6 +65,16 @@ class cFuncExprNode : public cExprNode
 
         // Return back the return type of the function
         virtual cDeclNode * GetType() { return m_funcdecl->GetType(); }
+        virtual cDeclNode * GetDecl() { return m_funcdecl; }
+
+        // Return back the function declaration
+        virtual cFuncDeclNode * GetFuncDecl() { return (cFuncDeclNode *)m_funcdecl; }
+
+        // Return back this function's name
+        string GetName() { return ((cSymbol *)GetChild(0))->GetName(); }
+
+        // Return back this function's parameters
+        cParamListNode * GetParams() { return (cParamListNode *)GetChild(1); }
 
         virtual string NodeType() { return string("funcCall"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
