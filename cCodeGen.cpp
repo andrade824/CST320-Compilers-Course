@@ -121,28 +121,6 @@ void cCodeGen::Visit(cBinaryExprNode *node)
     node->GetOperand2()->Visit(this);
 }
 
-void cCodeGen::Visit(cFuncExprNode *node)
-{
-    EmitString("*(int *)&Memory[Stack_Pointer] = Frame_Pointer;\n");
-    EmitString("Stack_Pointer += 4;\n");
-    EmitString("Frame_Pointer = Stack_Pointer;\n");
-
-    // Push parameters onto stack
-    if(node->GetParams() != nullptr)
-    {
-        for(int i = 0; i < node->GetParams()->NumChildren(); ++i)
-            PushExpression(node->GetParams()->GetExpr(i));
-    }
-
-    EmitString(node->GetName() + "();\n");
-
-    if(node->GetParams() != nullptr)
-        EmitString("Stack_Pointer -= " + to_string(node->GetFuncDecl()->GetParams()->GetSize()) + ";\n");
-    
-    EmitString("Stack_Pointer -= 4;\n");
-    EmitString("Frame_Pointer = *(int *)&Memory[Stack_Pointer];\n");
-}
-
 void cCodeGen::Visit(cIfNode *node)
 {
     string endlabel = GenerateLabel();
@@ -206,13 +184,40 @@ void cCodeGen::Visit(cFuncDeclNode *node)
         if(node->GetStmts())
             node->GetStmts()->Visit(this);
 
+        EmitString(m_func_rtn_label + ":\n");
+
         // Decrement stack
         if(node->GetDecls())
             EmitString("Stack_Pointer -= " + to_string(node->GetDecls()->GetSize()) + ";\n");
-
-        EmitString(m_func_rtn_label + ":\n");
+        
         EndFunctionOutput();
     }
+}
+
+void cCodeGen::Visit(cFuncExprNode *node)
+{
+    EmitString("*(int *)&Memory[Stack_Pointer] = Frame_Pointer;\n");
+    EmitString("Stack_Pointer += 4;\n");
+
+    // Push parameters onto stack
+    if(node->GetParams() != nullptr)
+    {
+        for(int i = 0; i < node->GetParams()->NumChildren(); ++i)
+            PushExpression(node->GetParams()->GetExpr(i));
+
+        EmitString("Frame_Pointer = Stack_Pointer;\n");
+        EmitString("Frame_Pointer -= " + to_string(node->GetFuncDecl()->GetParams()->GetSize()) + ";\n");
+    }
+    else
+        EmitString("Frame_Pointer = Stack_Pointer;\n");
+
+    EmitString(node->GetName() + "();\n");
+
+    if(node->GetParams() != nullptr)
+        EmitString("Stack_Pointer -= " + to_string(node->GetFuncDecl()->GetParams()->GetSize()) + ";\n");
+    
+    EmitString("Stack_Pointer -= 4;\n");
+    EmitString("Frame_Pointer = *(int *)&Memory[Stack_Pointer];\n");
 }
 
 void cCodeGen::Visit(cReturnNode *node)
